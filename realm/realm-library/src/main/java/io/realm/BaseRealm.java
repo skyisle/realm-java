@@ -30,8 +30,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import io.realm.exceptions.RealmEncryptionNotSupportedException;
 import io.realm.exceptions.RealmMigrationNeededException;
@@ -70,7 +72,10 @@ abstract class BaseRealm implements Closeable {
     // thread pool for all async operations (Query & transaction)
     static final RealmThreadPoolExecutor asyncQueryExecutor = RealmThreadPoolExecutor.getInstance();
 
-    protected final List<WeakReference<RealmChangeListener>> changeListeners =
+    protected final Set<RealmChangeListener> changeListeners =
+            new CopyOnWriteArraySet<RealmChangeListener>();
+
+    protected final List<WeakReference<RealmChangeListener>> weakChangeListeners =
             new CopyOnWriteArrayList<WeakReference<RealmChangeListener>>();
 
     protected long threadId;
@@ -148,14 +153,18 @@ abstract class BaseRealm implements Closeable {
      */
     public void addChangeListener(RealmChangeListener listener) {
         checkIfValid();
-        for (WeakReference<RealmChangeListener> ref : changeListeners) {
+        changeListeners.add(listener);
+    }
+
+    void addChangeListenerAsWeakReference(RealmChangeListener listener) {
+        for (WeakReference<RealmChangeListener> ref : weakChangeListeners) {
             if (ref.get() == listener) {
                 // It has already been added before
                 return;
             }
         }
 
-        changeListeners.add(new WeakReference<RealmChangeListener>(listener));
+        weakChangeListeners.add(new WeakReference<RealmChangeListener>(listener));
     }
 
     /**
@@ -166,17 +175,7 @@ abstract class BaseRealm implements Closeable {
      */
     public void removeChangeListener(RealmChangeListener listener) {
         checkIfValid();
-        WeakReference<RealmChangeListener> weakRefToRemove = null;
-        for (WeakReference<RealmChangeListener> weakRef : changeListeners) {
-            if (listener == weakRef.get()) {
-                weakRefToRemove = weakRef;
-                // There won't be duplicated entries, checking is done when adding
-                break;
-            }
-        }
-        if (weakRefToRemove != null) {
-            changeListeners.remove(weakRefToRemove);
-        }
+        changeListeners.remove(listener);
     }
 
     void setHandler (Handler handler) {
@@ -207,14 +206,20 @@ abstract class BaseRealm implements Closeable {
     }
 
     protected void sendNotifications() {
-        Iterator<WeakReference<RealmChangeListener>> iterator = changeListeners.iterator();
+        // notify strong reference listener
+        for (Iterator<RealmChangeListener> iterator = changeListeners.iterator(); iterator.hasNext(); ) {
+            RealmChangeListener listener = iterator.next();
+            listener.onChange();
+        }
+        // notify weak reference listener (internals)
+        Iterator<WeakReference<RealmChangeListener>> iterator = weakChangeListeners.iterator();
         List<WeakReference<RealmChangeListener>> toRemoveList = null;
         while (iterator.hasNext()) {
             WeakReference<RealmChangeListener> weakRef = iterator.next();
             RealmChangeListener listener = weakRef.get();
             if (listener == null) {
                 if (toRemoveList == null) {
-                    toRemoveList = new ArrayList<WeakReference<RealmChangeListener>>(changeListeners.size());
+                    toRemoveList = new ArrayList<WeakReference<RealmChangeListener>>(weakChangeListeners.size());
                 }
                 toRemoveList.add(weakRef);
             } else {
@@ -222,7 +227,7 @@ abstract class BaseRealm implements Closeable {
             }
         }
         if (toRemoveList != null) {
-            changeListeners.removeAll(toRemoveList);
+            weakChangeListeners.removeAll(toRemoveList);
         }
     }
 

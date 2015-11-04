@@ -1011,8 +1011,8 @@ public final class Realm extends BaseRealm {
      *
      * @return changeListeners list of this realm instance
      */
-    protected List<WeakReference<RealmChangeListener>> getChangeListeners() {
-        return changeListeners;
+    List<WeakReference<RealmChangeListener>> getChangeListeners() {
+        return weakChangeListeners;
     }
 
     @SuppressWarnings("UnusedDeclaration")
