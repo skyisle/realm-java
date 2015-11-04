@@ -628,8 +628,8 @@ public class NotificationsTest extends AndroidTestCase {
                 backgroundRealm.addChangeListener(new RealmChangeListener() {
                     @Override
                     public void onChange() {
-                        numberOfInvocation.countDown();
                         backgroundRealm.close();
+                        numberOfInvocation.countDown();
                     }
                 });
                 backgroundThreadReady.countDown();
@@ -682,8 +682,8 @@ public class NotificationsTest extends AndroidTestCase {
                 mainRealm.addChangeListener(new RealmChangeListener() {
                     @Override
                     public void onChange() {
-                        numberOfInvocation.countDown();
                         mainRealm.close();
+                        numberOfInvocation.countDown();
                     }
                 });
                 mainThreadReady.countDown();
