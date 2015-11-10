@@ -188,6 +188,7 @@ public class RealmTest extends AndroidTestCase {
             fail("closed Realm instance must throw IllegalStateException.");
         } catch (IllegalStateException ignored) {
         }
+        testRealm = null;
     }
 
     public void testRealmCache() {
@@ -1886,6 +1887,7 @@ public class RealmTest extends AndroidTestCase {
         // After exception thrown in another thread, nothing should be changed to the realm in this thread.
         testRealm.checkIfValid();
         testRealm.close();
+        testRealm = null;
     }
 
     public void testRealmIsClosed() {
@@ -2061,7 +2063,9 @@ public class RealmTest extends AndroidTestCase {
                 } catch (Exception e) {
                     threadError[0] = e;
                 } finally {
-                    realm.close();
+                    if (!realm.isClosed()) {
+                        realm.close();
+                    }
                 }
             }
         }).start();
@@ -2113,7 +2117,8 @@ public class RealmTest extends AndroidTestCase {
         testRealm.createObject(Dog.class);
         testRealm.commitTransaction();
         bgThreadLatch.countDown();
-        awaitOrFail(bgClosedLatch);
+        //awaitOrFail(bgClosedLatch);
+        bgClosedLatch.await();
     }
 
     private void awaitOrFail(CountDownLatch latch) {
