@@ -5,6 +5,7 @@
  * Fixed some memory leaks when an Exception is thrown (#1730).
  * Fixed a memory leak when using relationships. (#1285)
  * RealmQuery.isNull() and RealmQuery.isNotNull() now throw IllegalArgumentException instead of RealmError if the fieldname is a linked field and the last element is a link (#1693).
+ * Removed RealmEncryptionNotSupportedException since encryption implementation changed in Realm underlying engine. Encryption is supported on any devices now.
 
 0.84.1
  * Updated Realm Core to 0.94.4

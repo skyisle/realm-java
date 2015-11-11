@@ -1,6 +1,6 @@
 import java.security.MessageDigest
 
-ext.coreVersion = '0.94.4'
+ext.coreVersion = '0.95.0'
 // empty or comment out this to disable hash checking
 ext.coreSha256Hash = 'feeae46e5ebdb7ce912b3f111b6a044c4dd0ef7b7eac9b313f8c7a40664d9fae'
 ext.forceDownloadCore =
