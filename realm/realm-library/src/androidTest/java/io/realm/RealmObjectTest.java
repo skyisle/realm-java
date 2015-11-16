@@ -494,8 +494,9 @@ public class RealmObjectTest extends AndroidTestCase {
     }
 
     public void testSetObjectFromAnotherRealmToLink() {
-        Realm anotherRealm = Realm.getInstance(new RealmConfiguration.Builder(getContext())
-                .name("another.realm").build());
+        RealmConfiguration config = new RealmConfiguration.Builder(getContext()).name("another.realm").build();
+        Realm.deleteRealm(config);
+        Realm anotherRealm = Realm.getInstance(config);
         //noinspection TryFinallyCanBeTryWithResources
         try {
             anotherRealm.beginTransaction();
@@ -639,8 +640,9 @@ public class RealmObjectTest extends AndroidTestCase {
     }
 
     public void testSetObjectFromAnotherRealmToLinkLists() {
-        Realm anotherRealm = Realm.getInstance(new RealmConfiguration.Builder(getContext())
-                .name("another.realm").build());
+        RealmConfiguration config = new RealmConfiguration.Builder(getContext()).name("another.realm").build();
+        Realm.deleteRealm(config);
+        Realm anotherRealm = Realm.getInstance(config);
         //noinspection TryFinallyCanBeTryWithResources
         try {
             anotherRealm.beginTransaction();

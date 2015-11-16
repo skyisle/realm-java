@@ -34,32 +34,7 @@ import io.realm.annotations.Required;
 // 9 Double
 // 10 Date
 // 11 Object
-public class NullTypes extends RealmObject {
-
-    public static String FIELD_STRING_NOT_NULL = "fieldStringNotNull";
-    public static String FIELD_STRING_NULL = "fieldStringNull";
-    public static String FIELD_BYTES_NOT_NULL = "fieldBytesNotNull";
-    public static String FIELD_BYTES_NULL = "fieldBytesNull";
-    public static String FIELD_BOOLEAN_NOT_NULL = "fieldBooleanNotNull";
-    public static String FIELD_BOOLEAN_NULL = "fieldBooleanNull";
-    public static String FIELD_BYTE_NOT_NULL = "fieldByteNotNull";
-    public static String FIELD_BYTE_NULL = "fieldByteNull";
-    public static String FIELD_SHORT_NOT_NULL = "fieldShortNotNull";
-    public static String FIELD_SHORT_NULL = "fieldShortNull";
-    public static String FIELD_INTEGER_NOT_NULL = "fieldIntegerNotNull";
-    public static String FIELD_INTEGER_NULL = "fieldIntegerNull";
-    public static String FIELD_LONG_NOT_NULL = "fieldLongNotNull";
-    public static String FIELD_LONG_NULL = "fieldLongNull";
-    public static String FIELD_FLOAT_NOT_NULL = "fieldFloatNotNull";
-    public static String FIELD_FLOAT_NULL = "fieldFloatNull";
-    public static String FIELD_DOUBLE_NOT_NULL = "fieldDoubleNotNull";
-    public static String FIELD_DOUBLE_NULL = "fieldDoubleNull";
-    public static String FIELD_DATE_NOT_NULL = "fieldDateNotNull";
-    public static String FIELD_DATE_NULL = "fieldDateNull";
-    public static String FIELD_OBJECT_NULL = "fieldObjectNull";
-
-    @PrimaryKey
-    private int id;
+public class NoPrimaryKeyNullTypes extends RealmObject {
 
     @Required
     private String fieldStringNotNull = "";
@@ -101,15 +76,7 @@ public class NullTypes extends RealmObject {
     private Date fieldDateNotNull = new Date(0);
     private Date fieldDateNull;
 
-    private NullTypes fieldObjectNull;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private NoPrimaryKeyNullTypes fieldObjectNull;
 
     public String getFieldStringNotNull() {
         return fieldStringNotNull;
@@ -271,11 +238,11 @@ public class NullTypes extends RealmObject {
         this.fieldDateNull = fieldDateNull;
     }
 
-    public NullTypes getFieldObjectNull() {
+    public NoPrimaryKeyNullTypes getFieldObjectNull() {
         return fieldObjectNull;
     }
 
-    public void setFieldObjectNull(NullTypes fieldObjectNull) {
+    public void setFieldObjectNull(NoPrimaryKeyNullTypes fieldObjectNull) {
         this.fieldObjectNull = fieldObjectNull;
     }
 }
