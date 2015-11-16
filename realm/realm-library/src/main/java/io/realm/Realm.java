@@ -628,7 +628,7 @@ public final class Realm extends BaseRealm {
         Table table = getTable(clazz);
         if (table.hasPrimaryKey()) {
             throw new UnsupportedOperationException("Cannot create RealmObjects with primary keys using Streams. " +
-                    "Use createObjectOrUpdate() instead.");
+                    "Use createOrUpdateObjectFromJson() instead.");
         }
 
         JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
